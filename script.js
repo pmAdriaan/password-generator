@@ -90,36 +90,39 @@ var upperCasedCharacters = [
 
 // Function to prompt user for password options
 function getPasswordOptions() {
-  let length;
+  let passwordLength;
 
   do {
-    length = prompt('How many characters would you like your password to have?');
+    passwordLength = prompt('How many characters would you like your password to have?');
 
     // Check if the user pressed "Cancel"
-    if (length === null) {
+    if (passwordLength === null) {
       alert('Operation cancelled. Exiting...');
       break; // Exit the loop if the user pressed "Cancel"
     }
 
-    length = parseInt(length);
+    passwordLength = parseInt(passwordLength);
 
     // Check if the input is a valid number within the specified range
-    if (isNaN(length) || length < 8 || length > 128) {
+    if (isNaN(passwordLength) || passwordLength < 8 || passwordLength > 128) {
       alert('Invalid input. Please enter a number between 8 and 128');
     }
 
-  } while (isNaN(length) || length < 8 || length > 128);
+  } while (isNaN(passwordLength) || passwordLength < 8 || passwordLength > 128);
 
 
   // Prompts the user if they want numbers, //
   // special characters, lower or upper case letters added to their password //
 
   // Initialize variables to store the user options
-  let includeNumbers, includeSpecialChars, includeLowerCaseLetters, includeUpperCaseLetters;
+  let includeNumbers,
+      includeSpecialChars,
+      includeLowerCaseLetters,
+      includeUpperCaseLetters;
 
   do {
     // Check if the user pressed "Cancel"
-    if (length === null) {
+    if (passwordLength === null) {
       break; // Exit the loop if the user pressed "Cancel"
     }
 
@@ -137,7 +140,7 @@ function getPasswordOptions() {
 
   // Return user password options (boolean values)
   return {
-    length: length,
+    passwordLength: passwordLength,
     includeNumbers: includeNumbers,
     includeSpecialChars: includeSpecialChars,
     includeLowerCaseLetters: includeLowerCaseLetters,
@@ -152,9 +155,64 @@ function getRandom(arr) {
 
 // Function to generate password with user input
 function generatePassword() {
-  let options = getPasswordOptions();
+  // Get password options
+  let passwordOptions = getPasswordOptions();
 
-  console.log(options);
+  // Initialize an array to store all possible characters
+  let allChars = [];
+
+  // Include lowercase letters if specified in options
+  if (passwordOptions.includeLowerCaseLetters) {
+    allChars = allChars.concat(lowerCasedCharacters);
+  }
+
+  // Include uppercase letters if specified in options
+  if (passwordOptions.includeUpperCaseLetters) {
+    allChars = allChars.concat(upperCasedCharacters);
+  }
+
+  // Include special characters if specified in options
+  if (passwordOptions.includeSpecialChars) {
+    allChars = allChars.concat(specialCharacters);
+  }
+
+  // Include numbers if specified in options
+  if (passwordOptions.includeNumbers) {
+    allChars = allChars.concat(numericCharacters);
+  }
+
+  // Initialize an array to store the password
+  let password = [];
+
+  // Ensure at least one character from each selected option is included
+  if (passwordOptions.includeLowerCaseLetters) {
+    password.push(getRandom(lowerCasedCharacters));
+  }
+
+  if (passwordOptions.includeUpperCaseLetters) {
+    password.push(getRandom(upperCasedCharacters));
+  }
+
+  if (passwordOptions.includeSpecialChars) {
+    password.push(getRandom(specialCharacters));
+  }
+
+  if (passwordOptions.includeNumbers) {
+    password.push(getRandom(numericCharacters));
+  }
+
+  // Generate the remaining characters of the password
+  for (let i = password.length; i < passwordOptions.passwordLength; i++) {
+    password.push(getRandom(allChars));
+  }
+
+  // Shuffle the password to randomize the order of selected characters
+  password = password.sort(function () {
+    return Math.random() - 0.5;
+  });
+
+  // Convert the array of characters into a string and return the password
+  return password.join("");
 }
 
 // Get references to the #generate element
