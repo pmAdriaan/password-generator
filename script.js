@@ -143,14 +143,11 @@ function getPasswordOptions() {
     includeLowerCaseLetters: includeLowerCaseLetters,
     includeUpperCaseLetters: includeUpperCaseLetters,
   }
-
 }
-
-// console.log(getPasswordOptions());
 
 // Function for getting a random element from an array
 function getRandom(arr) {
-
+  return arr[Math.floor(Math.random() * arr.length)];
 }
 
 // Function to generate password with user input
@@ -158,7 +155,6 @@ function generatePassword() {
   let options = getPasswordOptions();
 
   console.log(options);
-
 }
 
 // Get references to the #generate element
